@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Blood Requests — BloodLink{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem;">
+  <!-- Page Header -->
+  <div class="section-header">
+    <div>
+      <h1 class="section-title">Blood Requests</h1>
+      <p class="section-subtitle">Active and emergency blood requests posted by patients, family members, and hospitals.</p>
+    </div>
+    <a href="{% url 'blood_app:request_create' %}" class="btn btn-primary">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+      </svg>
+      Create Blood Request
+    </a>
+  </div>
+
+  <!-- Filter Card -->
+  <div class="filter-card">
+    <form method="GET" action="{% url 'blood_app:request_list' %}" class="filter-form">
+      <div class="form-group" style="margin-bottom: 0;">
+        <label for="id_blood_group" class="form-label">Blood Group</label>
+        <select name="blood_group" id="id_blood_group" class="form-select">
+          <option value="">All Blood Groups</option>
+          {% for bg_val, bg_label in blood_groups %}
+            <option value="{{ bg_val }}" {% if selected_blood_group == bg_val %}selected{% endif %}>{{ bg_label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 0;">
+        <label for="id_location" class="form-label">Location or Hospital</label>
+        <input type="text" name="location" id="id_location" class="form-input" placeholder="e.g. Feni, Central Hospital" value="{{ selected_location }}">
+      </div>
+
+      <div class="form-group" style="margin-bottom: 0;">
+        <label for="id_status" class="form-label">Request Status</label>
+        <select name="status" id="id_status" class="form-select">
+          <option value="">All Statuses</option>
+          {% for status_val, status_label in status_choices %}
+            <option value="{{ status_val }}" {% if selected_status == status_val %}selected{% endif %}>{{ status_label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 0;">
+        <label for="id_urgency" class="form-label">Urgency</label>
+        <select name="urgency" id="id_urgency" class="form-select">
+          <option value="">All Urgencies</option>
+          {% for urg_val, urg_label in urgency_choices %}
+            <option value="{{ urg_val }}" {% if selected_urgency == urg_val %}selected{% endif %}>{{ urg_label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="submit" class="btn btn-primary">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          Filter
+        </button>
+        {% if selected_blood_group or selected_location or selected_status or selected_urgency %}
+          <a href="{% url 'blood_app:request_list' %}" class="btn btn-secondary" title="Reset Filters">Reset</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+
+  <div style="margin-bottom: 1.5rem; font-size: 0.95rem; color: var(--slate-600);">
+    Showing <strong>{{ total_results }}</strong> blood request(s)
+  </div>
+
+  <!-- Requests Grid -->
+  {% if page_obj.object_list %}
+    <div class="grid-2">
+      {% for req in page_obj %}
+        <div class="card request-card {% if req.status == 'Fulfilled' %}fulfilled{% elif req.urgency == 'Critical' %}critical{% elif req.urgency == 'Urgent' %}urgent{% endif %}">
+          <div class="card-body">
+            <div class="request-card-header">
+              <div>
+                <span class="patient-title">{{ req.patient_name }}</span>
+                <div style="margin-top: 0.35rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  {% if req.status == 'Fulfilled' %}
+                    <span class="badge badge-fulfilled">Fulfilled</span>
+                  {% elif req.status == 'Cancelled' %}
+                    <span class="badge badge-cancelled">Cancelled</span>
+                  {% else %}
+                    <span class="badge badge-pending">Pending</span>
+                  {% endif %}
+
+                  {% if req.urgency == 'Critical' %}
+                    <span class="badge badge-critical">Critical</span>
+                  {% elif req.urgency == 'Urgent' %}
+                    <span class="badge badge-urgent">Urgent</span>
+                  {% else %}
+                    <span class="badge" style="background: var(--slate-100); color: var(--slate-600);">Normal</span>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="blood-pill-lg">{{ req.blood_group }}</div>
+            </div>
+
+            <div class="info-item">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+              </svg>
+              <span><strong>Hospital:</strong> {{ req.hospital_name }}</span>
+            </div>
+
+            <div class="info-item">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <span><strong>Location:</strong> {{ req.location }}</span>
+            </div>
+
+            <div class="info-item">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              <span><strong>Required Date:</strong> {{ req.required_date|date:"d M, Y" }} &bull; <strong>{{ req.bags_required }} Bag(s)</strong></span>
+            </div>
+
+            <p style="font-size: 0.85rem; color: var(--slate-600); margin-top: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+              {{ req.reason }}
+            </p>
+          </div>
+
+          <div class="card-footer">
+            <a href="tel:{{ req.contact_number }}" class="btn btn-outline-danger btn-sm">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+              </svg>
+              Call {{ req.contact_number }}
+            </a>
+            <a href="{% url 'blood_app:request_detail' req.pk %}" class="btn btn-primary btn-sm">
+              View Details
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+      <div class="pagination">
+        {% if page_obj.has_previous %}
+          <a href="?page=1{% if selected_blood_group %}&blood_group={{ selected_blood_group }}{% endif %}{% if selected_location %}&location={{ selected_location }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_urgency %}&urgency={{ selected_urgency }}{% endif %}" class="page-btn">&laquo;</a>
+          <a href="?page={{ page_obj.previous_page_number }}{% if selected_blood_group %}&blood_group={{ selected_blood_group }}{% endif %}{% if selected_location %}&location={{ selected_location }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_urgency %}&urgency={{ selected_urgency }}{% endif %}" class="page-btn">&lsaquo;</a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <span class="page-btn active">{{ num }}</span>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}{% if selected_blood_group %}&blood_group={{ selected_blood_group }}{% endif %}{% if selected_location %}&location={{ selected_location }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_urgency %}&urgency={{ selected_urgency }}{% endif %}" class="page-btn">{{ num }}</a>
+          {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if selected_blood_group %}&blood_group={{ selected_blood_group }}{% endif %}{% if selected_location %}&location={{ selected_location }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_urgency %}&urgency={{ selected_urgency }}{% endif %}" class="page-btn">&rsaquo;</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}{% if selected_blood_group %}&blood_group={{ selected_blood_group }}{% endif %}{% if selected_location %}&location={{ selected_location }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_urgency %}&urgency={{ selected_urgency }}{% endif %}" class="page-btn">&raquo;</a>
+        {% endif %}
+      </div>
+    {% endif %}
+
+  {% else %}
+    <div style="background: white; border-radius: 12px; border: 1px solid var(--slate-200); padding: 3rem; text-align: center;">
+      <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color: var(--slate-400); margin: 0 auto 1rem;">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">No blood requests found</h3>
+      <p class="text-muted" style="max-width: 450px; margin: 0 auto 1.5rem;">
+        No active requests match the selected filters.
+      </p>
+      <a href="{% url 'blood_app:request_list' %}" class="btn btn-secondary">Clear Filters</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Blood Requests — BloodLink{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem;">
+  <div class="section-header">
+    <div>
+      <h1 class="section-title">My Blood Requests</h1>
+      <p class="section-subtitle">Manage all blood requests posted from your account.</p>
+    </div>
+    <a href="{% url 'blood_app:request_create' %}" class="btn btn-primary">
+      + Post New Request
+    </a>
+  </div>
+
+  {% if page_obj.object_list %}
+    <div style="background: white; border-radius: var(--radius-lg); border: 1px solid var(--slate-200); box-shadow: var(--shadow-sm); overflow: hidden;">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Blood Needed</th>
+              <th>Hospital &amp; City</th>
+              <th>Required Date</th>
+              <th>Status</th>
+              <th>Posted On</th>
+              <th style="text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for req in page_obj %}
+              <tr>
+                <td>
+                  <strong>{{ req.patient_name }}</strong>
+                  <div style="font-size: 0.8rem; color: var(--slate-500);">Contact: {{ req.contact_number }}</div>
+                </td>
+                <td>
+                  <span class="blood-pill">{{ req.blood_group }}</span>
+                  <div style="font-size: 0.8rem; color: var(--slate-600); margin-top: 0.25rem;">{{ req.bags_required }} bag(s)</div>
+                </td>
+                <td>
+                  <div>{{ req.hospital_name }}</div>
+                  <div style="font-size: 0.8rem; color: var(--slate-500);">{{ req.location }}</div>
+                </td>
+                <td>
+                  {{ req.required_date|date:"d M, Y" }}
+                </td>
+                <td>
+                  {% if req.status == 'Fulfilled' %}
+                    <span class="badge badge-fulfilled">Fulfilled</span>
+                  {% elif req.status == 'Cancelled' %}
+                    <span class="badge badge-cancelled">Cancelled</span>
+                  {% else %}
+                    <span class="badge badge-pending">Pending</span>
+                  {% endif %}
+                </td>
+                <td style="font-size: 0.825rem; color: var(--slate-500);">
+                  {{ req.created_at|date:"d M Y" }}
+                </td>
+                <td style="text-align: right;">
+                  <div style="display: inline-flex; gap: 0.35rem;">
+                    <a href="{% url 'blood_app:request_detail' req.pk %}" class="btn btn-secondary btn-sm" title="View Details">
+                      View
+                    </a>
+                    <a href="{% url 'blood_app:request_edit' req.pk %}" class="btn btn-secondary btn-sm" title="Edit Request">
+                      Edit
+                    </a>
+                    <a href="{% url 'blood_app:request_delete' req.pk %}" class="btn btn-outline-danger btn-sm" title="Delete Request">
+                      Delete
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+      <div class="pagination">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">&lsaquo;</a>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <span class="page-btn active">{{ num }}</span>
+          {% else %}
+            <a href="?page={{ num }}" class="page-btn">{{ num }}</a>
+          {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}" class="page-btn">&rsaquo;</a>
+        {% endif %}
+      </div>
+    {% endif %}
+
+  {% else %}
+    <div style="background: white; border-radius: 12px; border: 1px solid var(--slate-200); padding: 3rem; text-align: center;">
+      <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color: var(--slate-400); margin: 0 auto 1rem;">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+      </svg>
+      <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">No blood requests posted yet</h3>
+      <p class="text-muted" style="max-width: 450px; margin: 0 auto 1.5rem;">
+        If you or someone you know requires whole blood or platelets, submit a request to reach donors quickly.
+      </p>
+      <a href="{% url 'blood_app:request_create' %}" class="btn btn-primary">Create Your First Blood Request</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

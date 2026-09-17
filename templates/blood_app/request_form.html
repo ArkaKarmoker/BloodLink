@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} — BloodLink{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2.5rem; max-width: 720px;">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="brand-icon" style="margin: 0 auto 1rem; width: 48px; height: 48px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+        </svg>
+      </div>
+      <h1 class="auth-title">{{ title }}</h1>
+      <p class="text-muted">
+        Provide accurate patient and hospital information so compatible donors can respond immediately.
+      </p>
+    </div>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger" style="margin-bottom: 1.25rem;">
+          {% for error in form.non_field_errors %}
+            <div>{{ error }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label for="{{ form.patient_name.id_for_label }}" class="form-label">Patient Name *</label>
+          {{ form.patient_name }}
+          {% if form.patient_name.errors %}
+            <div class="form-error">{{ form.patient_name.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.blood_group.id_for_label }}" class="form-label">Blood Group Required *</label>
+          {{ form.blood_group }}
+          {% if form.blood_group.errors %}
+            <div class="form-error">{{ form.blood_group.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label for="{{ form.hospital_name.id_for_label }}" class="form-label">Hospital / Clinic Name *</label>
+          {{ form.hospital_name }}
+          {% if form.hospital_name.errors %}
+            <div class="form-error">{{ form.hospital_name.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.location.id_for_label }}" class="form-label">City / District / Area *</label>
+          {{ form.location }}
+          {% if form.location.errors %}
+            <div class="form-error">{{ form.location.errors.0 }}</div>
+          {% endif %}
+          <div class="form-help">e.g. Feni, Dhaka, Chittagong</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.hospital_address.id_for_label }}" class="form-label">Hospital Address / Ward / Bed (Optional)</label>
+        {{ form.hospital_address }}
+        {% if form.hospital_address.errors %}
+          <div class="form-error">{{ form.hospital_address.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label for="{{ form.required_date.id_for_label }}" class="form-label">Date Blood is Needed *</label>
+          {{ form.required_date }}
+          {% if form.required_date.errors %}
+            <div class="form-error">{{ form.required_date.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.bags_required.id_for_label }}" class="form-label">Number of Bags Required *</label>
+          {{ form.bags_required }}
+          {% if form.bags_required.errors %}
+            <div class="form-error">{{ form.bags_required.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label for="{{ form.contact_number.id_for_label }}" class="form-label">Attendant Contact Number *</label>
+          {{ form.contact_number }}
+          {% if form.contact_number.errors %}
+            <div class="form-error">{{ form.contact_number.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.urgency.id_for_label }}" class="form-label">Urgency Level *</label>
+          {{ form.urgency }}
+          {% if form.urgency.errors %}
+            <div class="form-error">{{ form.urgency.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if form.status %}
+        <div class="form-group">
+          <label for="{{ form.status.id_for_label }}" class="form-label">Request Status</label>
+          {{ form.status }}
+          {% if form.status.errors %}
+            <div class="form-error">{{ form.status.errors.0 }}</div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <div class="form-group">
+        <label for="{{ form.reason.id_for_label }}" class="form-label">Reason / Patient Condition *</label>
+        {{ form.reason }}
+        {% if form.reason.errors %}
+          <div class="form-error">{{ form.reason.errors.0 }}</div>
+        {% endif %}
+        <div class="form-help">Include details like surgery, dengue platelet requirement, thalassemia, or specific hospital donor room timings.</div>
+      </div>
+
+      <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+        <button type="submit" class="btn btn-primary btn-block btn-lg">
+          {{ button_text }}
+        </button>
+        <a href="{% if blood_request %}{% url 'blood_app:request_detail' blood_request.pk %}{% else %}{% url 'blood_app:request_list' %}{% endif %}" class="btn btn-secondary btn-lg">
+          Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

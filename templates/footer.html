@@ -1,0 +1,61 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <!-- About Col -->
+      <div>
+        <div class="footer-brand-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#F43F5E">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+          </svg>
+          BloodLink
+        </div>
+        <p class="footer-desc">
+          Blood Donate & Request System connecting volunteer blood donors with patients in urgent need across Bangladesh. Find a donor, save a life.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h4 class="footer-heading">Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="{% url 'blood_app:home' %}">Home</a></li>
+          <li><a href="{% url 'blood_app:donor_list' %}">Find Donors</a></li>
+          <li><a href="{% url 'blood_app:request_list' %}">Active Blood Requests</a></li>
+          <li><a href="{% url 'blood_app:about' %}">Blood Compatibility Matrix</a></li>
+        </ul>
+      </div>
+
+      <!-- Action Links -->
+      <div>
+        <h4 class="footer-heading">Actions</h4>
+        <ul class="footer-links">
+          <li><a href="{% url 'blood_app:request_create' %}">Request Blood Bags</a></li>
+          <li><a href="{% url 'blood_app:donor_create' %}">Register as Donor</a></li>
+          <li><a href="{% url 'blood_app:dashboard' %}">User Dashboard</a></li>
+          <li><a href="{% url 'blood_app:my_requests' %}">Track My Requests</a></li>
+        </ul>
+      </div>
+
+      <!-- Emergency Hotline -->
+      <div>
+        <h4 class="footer-heading">Emergency Hotline</h4>
+        <p class="footer-desc" style="margin-bottom: 0.75rem;">
+          In critical medical emergencies, post a request immediately or call local emergency dispatch:
+        </p>
+        <div style="background: rgba(255,255,255,0.06); padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+          <div style="font-size: 0.8rem; color: #94A3B8;">National Emergency</div>
+          <div style="font-size: 1.25rem; font-weight: 700; color: #FDA4AF; font-family: var(--font-heading);">999</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>
+        &copy; {% now "Y" %} <strong>BloodLink</strong> — Blood Donate & Request System. All rights reserved.
+      </div>
+      <div>
+        Developed By <a href="https://github.com/ArkaKarmoker" target="_blank" rel="noopener noreferrer">Arka Karmoker</a>
+      </div>
+    </div>
+  </div>
+</footer>

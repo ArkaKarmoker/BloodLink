@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ request_obj.blood_group }} Needed for {{ request_obj.patient_name }} — BloodLink{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2.5rem; max-width: 960px;">
+  <!-- Breadcrumbs & Navigation -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <a href="{% url 'blood_app:request_list' %}" class="btn btn-secondary btn-sm">
+      &larr; Back to Blood Requests
+    </a>
+
+    {% if is_owner %}
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <a href="{% url 'blood_app:request_edit' request_obj.pk %}" class="btn btn-primary btn-sm">
+          Edit Request
+        </a>
+        <a href="{% url 'blood_app:request_delete' request_obj.pk %}" class="btn btn-outline-danger btn-sm">
+          Delete Request
+        </a>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Main Request Card -->
+  <div class="card request-card {% if request_obj.status == 'Fulfilled' %}fulfilled{% elif request_obj.urgency == 'Critical' %}critical{% elif request_obj.urgency == 'Urgent' %}urgent{% endif %}" style="margin-bottom: 2rem;">
+    <div class="card-body" style="padding: 2.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1.5rem;">
+        <div>
+          <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap;">
+            {% if request_obj.status == 'Fulfilled' %}
+              <span class="badge badge-fulfilled">Status: Fulfilled</span>
+            {% elif request_obj.status == 'Cancelled' %}
+              <span class="badge badge-cancelled">Status: Cancelled</span>
+            {% else %}
+              <span class="badge badge-pending">Status: Pending</span>
+            {% endif %}
+
+            {% if request_obj.urgency == 'Critical' %}
+              <span class="badge badge-critical">Emergency: Critical</span>
+            {% elif request_obj.urgency == 'Urgent' %}
+              <span class="badge badge-urgent">Urgency: Urgent</span>
+            {% else %}
+              <span class="badge" style="background: var(--slate-100); color: var(--slate-600);">Priority: Normal</span>
+            {% endif %}
+          </div>
+          <h1 style="font-size: 2.25rem; margin-bottom: 0.25rem;">{{ request_obj.patient_name }}</h1>
+          <p class="text-muted">
+            Posted by <strong>{{ request_obj.requester.get_full_name|default:request_obj.requester.username }}</strong> on {{ request_obj.created_at|date:"d F Y, g:i A" }}
+          </p>
+        </div>
+
+        <div style="text-align: center;">
+          <div class="blood-pill-lg" style="width: 72px; height: 72px; font-size: 1.75rem; margin: 0 auto;">
+            {{ request_obj.blood_group }}
+          </div>
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary-700); margin-top: 0.5rem;">
+            {{ request_obj.bags_required }} Bag(s) Required
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Details Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; background: var(--slate-50); padding: 1.5rem; border-radius: var(--radius-lg); border: 1px solid var(--slate-200); margin-bottom: 2rem;">
+        <div class="info-item">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          </svg>
+          <div>
+            <div style="font-size: 0.8rem; color: var(--slate-500); font-weight: 600;">HOSPITAL</div>
+            <div style="font-weight: 700; color: var(--slate-900);">{{ request_obj.hospital_name }}</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <div>
+            <div style="font-size: 0.8rem; color: var(--slate-500); font-weight: 600;">LOCATION</div>
+            <div style="font-weight: 700; color: var(--slate-900);">{{ request_obj.location }}</div>
+            {% if request_obj.hospital_address %}
+              <div style="font-size: 0.825rem; color: var(--slate-600);">{{ request_obj.hospital_address }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="info-item">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          <div>
+            <div style="font-size: 0.8rem; color: var(--slate-500); font-weight: 600;">REQUIRED BY</div>
+            <div style="font-weight: 700; color: var(--slate-900);">{{ request_obj.required_date|date:"l, d F Y" }}</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+          </svg>
+          <div>
+            <div style="font-size: 0.8rem; color: var(--slate-500); font-weight: 600;">CONTACT PHONE</div>
+            <div style="font-weight: 700; color: var(--slate-900);">{{ request_obj.contact_number }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description / Reason -->
+      <div style="margin-bottom: 2rem;">
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.75rem;">Medical Reason &amp; Description</h3>
+        <div style="color: var(--slate-700); line-height: 1.8; background: white; padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--slate-200); white-space: pre-line;">
+          {{ request_obj.reason }}
+        </div>
+      </div>
+
+      <!-- Direct Contact CTA -->
+      <div style="background: linear-gradient(135deg, var(--primary-50), var(--primary-100)); border: 1px solid var(--primary-200); padding: 1.5rem; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <div style="font-weight: 800; font-size: 1.15rem; color: var(--primary-900);">Ready to donate for {{ request_obj.patient_name }}?</div>
+          <div style="font-size: 0.9rem; color: var(--primary-800);">Please call the contact number immediately to coordinate with the patient's attendants.</div>
+        </div>
+        <a href="tel:{{ request_obj.contact_number }}" class="btn btn-primary btn-lg">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+          </svg>
+          Call {{ request_obj.contact_number }}
+        </a>
+      </div>
+
+      <!-- Owner Status Update Form -->
+      {% if is_owner %}
+        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--slate-200);">
+          <h4 style="margin-bottom: 0.75rem;">Update Request Status</h4>
+          <form method="POST" action="{% url 'blood_app:request_update_status' request_obj.pk %}" style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+            {% csrf_token %}
+            <select name="status" class="form-select" style="max-width: 200px;">
+              <option value="Pending" {% if request_obj.status == 'Pending' %}selected{% endif %}>Pending</option>
+              <option value="Fulfilled" {% if request_obj.status == 'Fulfilled' %}selected{% endif %}>Fulfilled</option>
+              <option value="Cancelled" {% if request_obj.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+            <button type="submit" class="btn btn-secondary">Update Status</button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Matching Donors Section -->
+  <div class="card">
+    <div class="card-body" style="padding: 2rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
+        <div>
+          <h3 style="font-size: 1.35rem; margin-bottom: 0.25rem;">
+            Compatible Available Donors
+          </h3>
+          <p class="text-muted" style="font-size: 0.9rem;">
+            Donors who can safely donate to blood group <strong>{{ request_obj.blood_group }}</strong> ({{ request_obj.compatible_donor_groups|join:", " }}).
+          </p>
+        </div>
+        <a href="{% url 'blood_app:donor_list' %}?location={{ request_obj.location }}" class="btn btn-secondary btn-sm">
+          Search More in {{ request_obj.location }}
+        </a>
+      </div>
+
+      {% if matching_donors %}
+        <div class="grid-2">
+          {% for donor in matching_donors %}
+            <div style="border: 1px solid var(--slate-200); border-radius: var(--radius-md); padding: 1rem; display: flex; align-items: center; justify-content: space-between; background: var(--slate-50); gap: 1rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div class="blood-pill">{{ donor.blood_group }}</div>
+                <div>
+                  <div style="font-weight: 700; color: var(--slate-900);">{{ donor.display_name }}</div>
+                  <div style="font-size: 0.8rem; color: var(--slate-600);">{{ donor.location }}</div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <a href="tel:{{ donor.phone }}" class="btn btn-primary btn-sm">Call</a>
+                <a href="{% url 'blood_app:donor_detail' donor.pk %}" class="btn btn-secondary btn-sm">Profile</a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div style="text-align: center; padding: 2rem; background: var(--slate-50); border-radius: var(--radius-md);">
+          <p class="text-muted" style="margin-bottom: 1rem;">
+            No directly matching available donors found for {{ request_obj.location }}.
+          </p>
+          <a href="{% url 'blood_app:donor_list' %}" class="btn btn-secondary btn-sm">
+            Search All Registered Donors
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
