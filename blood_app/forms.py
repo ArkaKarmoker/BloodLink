@@ -26,7 +26,7 @@ class UserRegisterForm(UserCreationForm):
         'class': 'form-select'
     }))
     location = forms.CharField(max_length=100, required=True, widget=forms.TextInput(attrs={
-        'class': 'form-input', 'placeholder': 'Location (e.g. Feni, Dhaka)'
+        'class': 'form-input', 'placeholder': 'Location (e.g. Dhaka, Tangail, Chittagong)'
     }))
     date_of_birth = forms.DateField(required=False, widget=forms.DateInput(attrs={
         'class': 'form-input', 'type': 'date'
@@ -103,7 +103,7 @@ class DonorProfileForm(forms.ModelForm):
         widgets = {
             'blood_group': forms.Select(attrs={'class': 'form-select'}),
             'phone': forms.TextInput(attrs={'class': 'form-input', 'placeholder': '01XXXXXXXXX'}),
-            'location': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'City / Area (e.g. Feni, Dhaka)'}),
+            'location': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'City / Area (e.g. Dhaka, Tangail, Chittagong)'}),
             'address': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Street / Area / Landmarks'}),
             'date_of_birth': forms.DateInput(attrs={'class': 'form-input', 'type': 'date'}),
             'profile_picture': forms.FileInput(attrs={'class': 'form-input-file'}),
@@ -145,7 +145,7 @@ class BloodRequestForm(forms.ModelForm):
             'patient_name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Patient Full Name'}),
             'blood_group': forms.Select(attrs={'class': 'form-select'}),
             'hospital_name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'e.g. XYZ Central Hospital'}),
-            'location': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'City / District (e.g. Feni, Dhaka)'}),
+            'location': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'City / District (e.g. Dhaka, Tangail, Chittagong)'}),
             'hospital_address': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Hospital Ward / Bed / Street address'}),
             'required_date': forms.DateInput(attrs={'class': 'form-input', 'type': 'date'}),
             'bags_required': forms.NumberInput(attrs={'class': 'form-input', 'min': '1', 'max': '50'}),

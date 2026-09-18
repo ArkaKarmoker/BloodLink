@@ -13,7 +13,7 @@ class DonorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='donor_profile')
     phone = models.CharField(max_length=20)
     blood_group = models.CharField(max_length=5, choices=BLOOD_GROUP_CHOICES)
-    location = models.CharField(max_length=100, help_text="City, District, or Area (e.g., Feni, Dhaka, Chittagong)")
+    location = models.CharField(max_length=100, help_text="City, District, or Area (e.g., Dhaka, Tangail, Chittagong)")
     address = models.CharField(max_length=255, blank=True, help_text="Detailed address or preferred donation zone")
     date_of_birth = models.DateField(null=True, blank=True)
     profile_picture = models.ImageField(upload_to='donors/', blank=True, null=True)
