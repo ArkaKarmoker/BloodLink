@@ -8,7 +8,6 @@
   <img src="https://img.shields.io/badge/CSS-3-1572B6?style=for-the-badge&logo=css&logoColor=1572B6" alt="CSS3">
   <img src="https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript" alt="JavaScript">
   <img src="https://img.shields.io/badge/Google_Fonts-Outfit%20%26%20Plus%20Jakarta%20Sans-4285F4?style=for-the-badge&logo=googlefonts" alt="Google Fonts">
-  <img src="https://img.shields.io/badge/Tests-23%20Passed-10B981?style=for-the-badge&logo=pytest&logoColor=white" alt="Tests 23 Passed">
 </p>
 
 A modern, full-stack, production-grade Blood Donate & Request Management System built with **Django**, **Vanilla CSS3**, and **JavaScript**, connecting voluntary blood donors with patients, families, and healthcare facilities across Bangladesh in real time.
@@ -65,7 +64,6 @@ In critical medical emergencies—such as road traffic accidents, complex surger
 
 ### 1. User Authentication & Profile Management
 - **Email-Based Authentication**: Users and Administrators log in using their **Email Address and Password** across both the frontend (`/login/`) and the Django Admin panel (`/admin/`).
-- **Interactive Password Visibility**: Accessible eye/eye-slash toggle button inside password fields on both Login and Registration forms.
 - **Custom Registration**: Seamless onboarding collecting first name, last name, email, phone number, username, password, blood group, location, date of birth, and optional profile picture.
 - **Direct Donor Enrollment**: Checkbox option to automatically enroll as an active voluntary donor upon sign-up.
 
@@ -184,40 +182,21 @@ erDiagram
 <a id="sample-database-demo-credentials"></a>
 ## 👥 Sample Database & Demo Credentials
 
-The project comes with a comprehensive database seeding script (`python manage.py seed_data --clear`) featuring **49 realistic donors** across **21 popular districts** (Dhaka, Chittagong, Sylhet, Rajshahi, Khulna, Barishal, Rangpur, Mymensingh, Comilla, Feni, Bogura, Jessore, Cox's Bazar, etc.) with both **Hindu and Muslim** diversity across all 8 blood groups.
+The project comes with a comprehensive database seeding script (`python manage.py seed_data`) featuring **52 donors** and **17 blood requests** across Bangladesh.
 
-### Superuser / Admin Account:
+---
 
-| Role | Email Address | Username | Password | Access URL |
+### 🎯 Reviewer / Evaluator Quick-Start Credentials:
+
+For grading, code review, or live demonstration, use these pre-configured personas (Password: **`1234`** for all reviewer test accounts):
+
+| Role | Email Address | Username | Password | Intended Testing Scope & Test Cases |
 | :--- | :--- | :--- | :--- | :--- |
-| **Super Admin** | `admin@bloodlink.com` | `admin` | `admin12345` | [`http://127.0.0.1:8000/admin/`](http://127.0.0.1:8000/admin/) or [`/login/`](http://127.0.0.1:8000/login/) |
-
-### Sample Donor Accounts (Password for all: `donor12345`):
-
-| Name | Blood Group | District | Email Address | Status |
-| :--- | :---: | :--- | :--- | :--- |
-| **Tanvir Hossain** | `B+` | Dhaka (Dhanmondi) | `tanvir.hossain@example.com` | Available Donor |
-| **Puja Karmakar** | `A+` | Dhaka (Lalmatia) | `puja.karmakar@example.com` | Available Donor |
-| **Anik Chakraborty** | `O+` | Dhaka (Uttara) | `anik.chakraborty@example.com` | Available Donor |
-| **Sakib Hasan** | `O-` | Chittagong (Agrabad) | `sakib.h@example.com` | Universal Donor |
-| **Subrata Das** | `A+` | Chittagong (Nasirabad) | `subrata.das@example.com` | In Cooldown |
-| **Priyanka Dey** | `B+` | Chittagong (Jamalkhan) | `priyanka.dey@example.com` | Available Donor |
-| **Sumon Paul** | `AB+` | Sylhet (Zindabazar) | `sumon.p@example.com` | First-time Donor |
-| **Sadia Afrin** | `AB+` | Sylhet (Upashahar) | `sadia.afrin@example.com` | Available Donor |
-| **Mahfuzul Haque** | `AB+` | Rajshahi (Shaheb Bazar) | `mahfuzul.haque@example.com` | Available Donor |
-| **Jannatul Ferdous** | `O-` | Rajshahi (Kazihata) | `jannatul.ferdous@example.com` | Universal Donor |
-| **Farhan Sadik** | `O+` | Khulna (Shibbari) | `farhan.sadik@example.com` | Available Donor |
-| **Dipankar Saha** | `AB-` | Khulna (Sonadanga) | `dipankar.saha@example.com` | Rare AB- Donor |
-| **Saiful Islam** | `B-` | Barishal (C&B Road) | `saiful.islam@example.com` | Rare B- Donor |
-| **Amitava Majumder**| `A+` | Barishal (Natun Bazar) | `amitava.majumder@example.com` | Available Donor |
-| **Mehedi Hasan** | `A+` | Rangpur (Dhap) | `mehedi.hasan@example.com` | Available Donor |
-| **Biplob Roy** | `B+` | Dinajpur (Nimtola) | `biplob.roy@example.com` | Available Donor |
-| **Shahriar Kabir** | `AB-` | Mymensingh (Charpara) | `shahriar.kabir@example.com` | Rare AB- Donor |
-| **Sourav Bhowmik** | `O-` | Comilla (Kandirpar) | `sourav.bhowmik@example.com` | Universal Donor |
-| **Rahim Ahmed** | `O+` | Feni (Trunk Road) | `rahim.ahmed@example.com` | Available Donor |
-| **Fatima Begum** | `A-` | Feni (Hospital Road) | `fatima.b@example.com` | Available Donor |
-
-*(All accounts authenticate using their **Email Address** and password `donor12345`)*
+| **Super Admin** | `admin@example.com` | `admin` | `1234` | **System Administrator** (`Arka Karmoker`). Full control over Django Admin (`/admin/`), database records, user permissions, and platform moderation. *Sole admin account in database.* |
+| **Active Donor** | `test.donor@example.com` | `testdonor` | `1234` | **Active Universal RBC Donor** (`Test Donor`, `O-`, Dhaka). Test profile management, eligibility cooldown calculation, and instant **Available / Unavailable** donation toggle. |
+| **Blood Requester** | `test.requester@example.com` | `testrequester` | `1234` | **Patient Attendant / Requester** (`Test Requester`, `A+`, Dhaka). Owns 2 pre-seeded requests (1 Critical/Pending at DMCH + 1 Fulfilled at Square Hospital). Test submitting new requests, editing active requests, viewing matched donors, and marking requests as Fulfilled. |
+| **Another Donor** | `test.requester1@example.com` | `testrequester1` | `1234` | **Security & Permission Tester** (`Test Requester1`, `B+`, Chittagong). Non-owner account for testing Role-Based Access Control (RBAC). Verifies that edit/delete buttons are hidden and direct URL access (`/requests/<id>/edit/`) returns **HTTP 403 Forbidden**. |
+| **Public Visitor** | *(No login required)* | — | — | **Unauthenticated Guest**. Tests public landing page metrics, urgency triage feed, interactive Blood Compatibility Guide, and multi-parameter donor/request search filters. |
 
 ---
 
@@ -281,9 +260,9 @@ Apply database migrations:
 python manage.py migrate
 ```
 
-Seed database with realistic Bangladeshi donors & emergency blood requests:
+Seed database with realistic Bangladeshi donors & emergency blood requests (automatically flushes DB for a clean fresh start):
 ```bash
-python manage.py seed_data --clear
+python manage.py seed_data
 ```
 
 ### 6. Start Development Server
@@ -318,33 +297,6 @@ Ran 23 tests in 14.420s
 OK
 Destroying test database for alias 'default'...
 ```
-
-### Test Coverage Breakdown:
-- **`test_models.py`**:
-  - `test_donor_profile_creation_and_str`: String representations, display name fallback, age calculation.
-  - `test_donor_eligibility_calculator`: 90-day cooldown period and status messaging.
-  - `test_donor_compatibility`: Validates universal donor (O-) and universal recipient (AB+) compatibility maps.
-  - `test_blood_request_creation_and_matching_donors`: Cross-matching eligible donors for emergency requests.
-  - `test_phone_validation_utility`: Validates standard Bangladeshi phone regex (`01XXXXXXXXX`).
-- **`test_forms.py`**:
-  - `test_blood_request_form_valid`: Positive validation of blood request submissions.
-  - `test_blood_request_form_invalid_bags`: Rejects 0 or negative required bags.
-  - `test_blood_request_form_past_date`: Rejects dates in the past.
-  - `test_donor_profile_form_invalid_phone`: Validates contact phone numbers.
-  - `test_donor_profile_form_future_donation_date`: Rejects future donation dates.
-  - `test_user_registration_duplicate_email`: Enforces unique email constraints across accounts.
-- **`test_views.py`**:
-  - `test_home_view`: Validates HTTP 200, context metrics, urgent request feed, and compatibility table.
-  - `test_donor_list_and_filters`: Validates multi-parameter filtering by blood group, location, and availability.
-  - `test_donor_detail_view`: Profile rendering and compatible groups display.
-  - `test_donor_toggle_availability`: Tests instant availability switching via POST.
-  - `test_donor_crud_permission`: Enforces authentication for donor profile modifications.
-  - `test_blood_request_list_and_filters`: Validates status and urgency query filters.
-  - `test_blood_request_detail_view`: Checks matching donor query execution.
-  - `test_blood_request_create_authenticated`: Enforces requester assignment.
-  - `test_blood_request_edit_permissions`: Non-owners receive HTTP 403 Forbidden.
-  - `test_blood_request_delete_permissions`: Non-owners receive HTTP 403 Forbidden.
-  - `test_user_authentication_flow`: Tests register, logout, and email-based login cycles.
 
 ---
 

@@ -9,40 +9,132 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
+            '--no-flush',
+            action='store_true',
+            help='Skip flushing existing records before seeding',
+        )
+        parser.add_argument(
             '--clear',
             action='store_true',
-            help='Clear existing non-admin data before seeding fresh data',
+            help='Explicitly clear existing data before seeding (default behavior)',
         )
 
     def handle(self, *args, **options):
-        self.stdout.write('Seeding realistic Bangladeshi data for BloodLink...')
+        # Default behavior: Flush DB cleanly for a fresh start unless --no-flush is passed
+        should_flush = not options.get('no_flush', False)
 
-        if options['clear']:
-            self.stdout.write('Clearing existing requests and donor profiles...')
+        if should_flush:
+            self.stdout.write('Clearing all existing blood requests, donor profiles, and users...')
             BloodRequest.objects.all().delete()
             DonorProfile.objects.all().delete()
-            User.objects.filter(is_superuser=False).delete()
-            self.stdout.write('Cleared!')
+            User.objects.all().delete()
+            self.stdout.write('Starting fresh seed with realistic data...')
 
-        # 1. Administrator Setup
+        # 1. Administrator Setup (Single Admin in DB: Arka Karmoker)
         admin_user, _ = User.objects.get_or_create(
             username='admin',
             defaults={
-                'first_name': 'Admin',
-                'last_name': 'BloodLink',
-                'email': 'admin@bloodlink.com',
+                'first_name': 'Arka',
+                'last_name': 'Karmoker',
+                'email': 'admin@example.com',
                 'is_staff': True,
                 'is_superuser': True,
             }
         )
-        admin_user.email = 'admin@bloodlink.com'
+        admin_user.first_name = 'Arka'
+        admin_user.last_name = 'Karmoker'
+        admin_user.email = 'admin@example.com'
         admin_user.is_staff = True
         admin_user.is_superuser = True
-        admin_user.set_password('admin12345')
+        admin_user.set_password('1234')
         admin_user.save()
 
-        # 2. Comprehensive Bangladeshi Donors (Muslim & Hindu, All major districts, All 8 blood groups)
+        # 2. Dedicated Reviewer Accounts for Feature & Role Verification (Password: 1234)
         today = date.today()
+        reviewer_accounts = [
+            {
+                'username': 'testdonor',
+                'first_name': 'Test',
+                'last_name': 'Donor',
+                'email': 'test.donor@example.com',
+                'password': '1234',
+                'blood_group': 'O-',
+                'phone': '01711000001',
+                'location': 'Dhaka',
+                'address': 'House 12, Road 27, Dhanmondi, Dhaka',
+                'date_of_birth': date(1998, 1, 15),
+                'last_donation_date': today - timedelta(days=100),
+                'is_available': True,
+                'description': 'Active voluntary universal donor. Test account for checking donor profile editing, eligibility calculation, and instant availability toggle.',
+            },
+            {
+                'username': 'testrequester',
+                'first_name': 'Test',
+                'last_name': 'Requester',
+                'email': 'test.requester@example.com',
+                'password': '1234',
+                'blood_group': 'A+',
+                'phone': '01811000002',
+                'location': 'Dhaka',
+                'address': 'Section 10, Mirpur, Dhaka',
+                'date_of_birth': date(1995, 6, 20),
+                'last_donation_date': today - timedelta(days=150),
+                'is_available': True,
+                'description': 'Patient attendant / blood requester. Test account for managing emergency requests, editing requests, and marking as fulfilled.',
+            },
+            {
+                'username': 'testrequester1',
+                'first_name': 'Test',
+                'last_name': 'Requester1',
+                'email': 'test.requester1@example.com',
+                'password': '1234',
+                'blood_group': 'B+',
+                'phone': '01911000003',
+                'location': 'Chittagong',
+                'address': 'GEC Circle, Chittagong',
+                'date_of_birth': date(1999, 4, 12),
+                'last_donation_date': today - timedelta(days=95),
+                'is_available': True,
+                'description': 'Secondary donor account for security & permission testing (verifies HTTP 403 Forbidden when accessing other users\' edit/delete endpoints).',
+            },
+        ]
+
+        test_requester_user = None
+        for acc in reviewer_accounts:
+            user, _ = User.objects.get_or_create(
+                username=acc['username'],
+                defaults={
+                    'first_name': acc['first_name'],
+                    'last_name': acc['last_name'],
+                    'email': acc['email'],
+                }
+            )
+            user.first_name = acc['first_name']
+            user.last_name = acc['last_name']
+            user.email = acc['email']
+            user.is_staff = False
+            user.is_superuser = False
+            user.set_password(acc['password'])
+            user.save()
+
+            if acc['username'] == 'testrequester':
+                test_requester_user = user
+
+            DonorProfile.objects.update_or_create(
+                user=user,
+                defaults={
+                    'phone': acc['phone'],
+                    'blood_group': acc['blood_group'],
+                    'location': acc['location'],
+                    'address': acc['address'],
+                    'date_of_birth': acc['date_of_birth'],
+                    'last_donation_date': acc['last_donation_date'],
+                    'is_available': acc['is_available'],
+                    'description': acc['description'],
+                }
+            )
+
+        # 3. Comprehensive Bangladeshi Donors (Muslim & Hindu, All major districts, All 8 blood groups)
         sample_donors = [
             # ======================== DHAKA DIVISION ========================
             {
@@ -780,8 +872,37 @@ class Command(BaseCommand):
                 }
             )
 
-        # 3. Realistic Bangladeshi Emergency Blood Requests
+        # 4. Realistic Bangladeshi Emergency Blood Requests
         sample_requests = [
+            # Dedicated test requests for 'testrequester' (Reviewer testing)
+            {
+                'requester_user': test_requester_user,
+                'patient_name': 'Sumaiya Rahman',
+                'blood_group': 'O-',
+                'hospital_name': 'Dhaka Medical College Hospital (DMCH)',
+                'location': 'Dhaka',
+                'hospital_address': 'Secretariat Road, DMCH Ward 12, Dhaka',
+                'required_date': today + timedelta(days=1),
+                'bags_required': 2,
+                'contact_number': '01811000002',
+                'urgency': 'Critical',
+                'status': 'Pending',
+                'reason': 'Emergency cardiac surgery requiring rare O- negative blood. Active test request for reviewing Edit/Delete, Status update, and Donor Matching.',
+            },
+            {
+                'requester_user': test_requester_user,
+                'patient_name': 'Kawsar Ahmed',
+                'blood_group': 'A+',
+                'hospital_name': 'Square Hospital, Dhaka',
+                'location': 'Dhaka',
+                'hospital_address': 'Panthapath, Dhaka',
+                'required_date': today - timedelta(days=4),
+                'bags_required': 1,
+                'contact_number': '01811000002',
+                'urgency': 'Normal',
+                'status': 'Fulfilled',
+                'reason': 'Elective knee surgery transfusion successfully completed and marked as fulfilled by requester.',
+            },
             {
                 'requester_user': created_users[13],  # Rahim (Feni)
                 'patient_name': 'Mohammad Rafiq',
