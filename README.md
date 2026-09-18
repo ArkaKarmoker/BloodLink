@@ -25,6 +25,7 @@ A modern, full-stack, production-grade Blood Donate & Request Management System 
 - [Sample Database & Demo Credentials](#sample-database--demo-credentials)
 - [Installation & Local Setup Guide](#installation-setup-guide)
 - [Automated Testing](#automated-testing)
+- [UI Screenshots Showcase](#ui-screenshots-showcase)
 - [Project Architecture & Directory Structure](#project-architecture)
 
 ---
@@ -300,6 +301,72 @@ Destroying test database for alias 'default'...
 
 ---
 
+<a id="ui-screenshots-showcase"></a>
+## 📸 UI Screenshots Showcase
+
+> **Note**: All 15 high-resolution application UI and admin panel screenshots are stored inside the [`screenshots/`](./screenshots) directory in this repository.
+
+### 🌐 1. Public & Core Discovery Pages
+
+#### 1. Home Page
+![Home Page](<screenshots/1. Home Page.jpeg>)
+
+#### 2. Blood Donors Directory
+![Blood Donors Page](<screenshots/2. Blood Donors Page.jpeg>)
+
+#### 3. Emergency Blood Requests Directory
+![Blood Requests Page](<screenshots/3. Blood Requests Page.jpeg>)
+
+#### 4. About & Blood Compatibility Guide
+![About & Guide Page](<screenshots/4. About & Guide Page.jpeg>)
+
+---
+
+### 🩸 2. Blood Request Lifecycle & Donor Matching
+
+#### 5. Post an Emergency Blood Request
+![Post a Blood Request Page](<screenshots/6. Post a Blood Request Page.jpeg>)
+
+#### 6. Blood Request Detail with Live Status & Compatible Donor Matching
+![View Blood Request with Status Page](<screenshots/11. View Blood Request with Status Page.jpeg>)
+
+#### 7. User's Blood Requests Management
+![User's Blood Requests Page](<screenshots/13. User's Blood Requests Page.jpeg>)
+
+---
+
+### 👤 3. Donor Profile & Dashboard Management
+
+#### 8. Donor Dashboard (One-Click Availability Toggle & Live Metrics)
+![Donor Dashboard Page](<screenshots/7. Donor Dashboard Page.jpeg>)
+
+#### 9. Create Donor Profile
+![Create Donor Profile Page](<screenshots/5. Create Donor Profile Page.jpeg>)
+
+#### 10. Edit Donor Medical & Contact Information
+![Edit Donor Info Page](<screenshots/8. Edit Donor Info Page.jpeg>)
+
+#### 11. Edit Account Details
+![Edit Account Details Page](<screenshots/9. Edit Account Details Page.jpeg>)
+
+#### 12. User's Public Profile
+![User's Public Profile Page](<screenshots/12. User's Public Profile Page.jpeg>)
+
+---
+
+### 🛡️ 4. Django Admin Management Panel
+
+#### 13. Admin Panel — Users Management
+![Admin Panel Users Page](<screenshots/14. Admin Panel Users Page.jpeg>)
+
+#### 14. Admin Panel — Emergency Blood Requests Moderation
+![Admin Panel Blood Requests Page](<screenshots/15. Admin Panel Blood Requests Page.jpeg>)
+
+#### 15. Admin Panel — Donor Profiles Overview
+![Admin Panel Donor Profiles Page](<screenshots/16. Admin Panel Donor Profiles Page.jpeg>)
+
+---
+
 <a id="project-architecture"></a>
 ## 📂 Project Architecture & Directory Structure
 
@@ -366,7 +433,8 @@ BloodLink/
 │   └── js/
 │       └── main.js                         # Mobile Drawer, Password Toggle & Toast Manager
 │
-├── media/                                  # User Uploaded Avatars (gitignored)
+├── media/                                  # User Uploaded Avatars (media/donors/)
+├── screenshots/                            # 15 High-Resolution Application UI Screenshots
 ├── requirements.txt                        # Top-level Dependencies with Pinned Versions
 ├── manage.py                               # Django CLI Runner
 ├── db.sqlite3                              # Pre-populated SQLite Database
