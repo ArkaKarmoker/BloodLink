@@ -58,8 +58,12 @@ cover/
 # Django stuff:
 *.log
 local_settings.py
-db.sqlite3
-db.sqlite3-journal
+
+# Database & Media files (tracked so pre-seeded DB and media can be pushed to GitHub)
+!db.sqlite3
+*.sqlite3-journal
+!media/
+!media/**
 
 # Flask stuff:
 instance/
